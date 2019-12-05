@@ -1,5 +1,4 @@
 const zmq = require('zeromq'); //importar libreria zeromq
-
 function hashName(name){//Hacer el hash del nombre del video
     var hash = 0, i, chr;
     if (name.length === 0) return hash;
@@ -20,13 +19,15 @@ function connectToServer(hash, ipC){//Cliente se conecta al servidor para conoce
     s.send(hash+"//"+ipC); 
     s.on('message',(msg)=>{
         console.log("Recibido");
-        return msg;//recibe una lista de las ips de los clientes que tienen el video
+        var m = new Array(msg)
+        console.log(m)
+        return m//recibe una lista de las ips de los clientes que tienen el video
         s.close();
     })
 }
 
 function connectToClient(hash, ipC){//Cliente se conecta a un cliente  para que le envie el video
-    let c = zqm.socket('req');
+    let c = zmq.socket('req');
     console.log("Conectando....");
     c.connect('tcp://'+ipC+":5004")//Ip del cliente que tiene el video
     c.send(hash);
@@ -37,8 +38,9 @@ function connectToClient(hash, ipC){//Cliente se conecta a un cliente  para que 
     })
 }
 
+
 function enviarVideo(hash, ipC){
-    let p = zqm.socket('router')
+    let p = zmq.socket('router')
     console.log("Enviando...")
     p.bind("tcp//*:5004")
     p.on('message',(nombreVideo) => {
@@ -52,14 +54,17 @@ function enviarVideo(hash, ipC){
 }
 
 
-var nombre = prompt('Introduce el nombre:');
+/*var nombre = prompt('Introduce el nombre:');
 var hash = hashName(nombre);
 var ipC=0;
 $.post("http://jsonip.appspot.com/",function(data){//conseguir la ip de este pc
     ipC = data.ip;
 },"json");
-
-var ipsV = connectToServer(hash,ipC);
+*/
+var hash = "hola";
+var ipC=0;
+var ipsV = new Array (connectToServer(hash,ipC));
+console.log(ipsV)
 if(ipsV.length>0){
     var random = Math.floor(Math.random() * ipsV.length);//se coje un cliente random de la lista de ips que tienen el video
 }
