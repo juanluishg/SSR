@@ -1,6 +1,6 @@
 const zmq = require('zeromq');
 
-var BD = [{14132441038,127.0.0.1},{1497625976,127.0.0.1}]
+var BD = [{14132441038:"127.0.0.1"},{1497625976:"127.0.0.1"}]
 var BDmap = new Map([BD]);
 
 function hashName(name){//Hacer el hash del nombre del video
