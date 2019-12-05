@@ -31,8 +31,7 @@ function escucharGuardar(){
 
 
 function escucharBuscar(){
-
-	var s = zmq.socket('router');
+	let s = zmq.socket('router');
 
 	s.bind('tcp://*:5555');
 
@@ -45,6 +44,7 @@ function escucharBuscar(){
 
 	s.close();
 }
+
 
 
 escucharBuscar();
