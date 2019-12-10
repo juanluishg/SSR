@@ -47,9 +47,10 @@ function enviarVideo(hash, ipC){
     p.on('message',(nombreVideo) => {
             var v = nombreVideo;
             if(file_exits(v)){
-                var arch = GetObject("\\home\\juanluishg\\Videos\\"+v+".avi");
+                var arch = GetObject("/home/juanluishg/Videos/"+v+".avi");
                 var leido = reader.readAsArrayBuffer(arch)
-                p.send()
+                for(let i=0;i<arch.length;i++){p.send(arch[i])}
+                p.send("fin");
                 console.log("Enviado");
             }
         p.close();
