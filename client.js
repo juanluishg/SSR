@@ -67,7 +67,7 @@ $.post("http://jsonip.appspot.com/",function(data){//conseguir la ip de este pc
 */
 var hash = "hola";
 var ipC=0;
-var ipsV = new Array (connectToServer(hash,ipC));
+var ipsV = connectToServer(hash,ipC);
 console.log(ipsV)
 if(ipsV.length>0){
     var random = Math.floor(Math.random() * ipsV.length);//se coje un cliente random de la lista de ips que tienen el video

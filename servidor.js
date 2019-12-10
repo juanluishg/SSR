@@ -23,10 +23,9 @@ function escucharGuardar(){
 	
 	r.on('message',(hash,ipC)=>{ //escucha en el 5566 para guardar a peers con un video
 
-		BDmap.prototype.set(hash,ipC);
+		BDmap.set(hash,ipC);
 	});
 
-	r.close();
 }
 
 
@@ -37,12 +36,12 @@ function escucharBuscar(){
 
 	s.on('message',(hash,ipC)=>{ //escucha en el 5555 para recibir la peticion y devolver los pares con ese video
 	
-		let ip = BDmap.prototype.get(hash);
+		let ip = BDmap.get(hash);
 
 			s.send(ip);
 		});
 
-	s.close();
+
 }
 
 
