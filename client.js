@@ -1,3 +1,4 @@
+const config = require('./json/config.json');
 const zmq = require('zeromq'); //importar libreria zeromq
 function hashName(name){//Hacer el hash del nombre del video
     var hash = 0, i, chr;
@@ -57,6 +58,22 @@ function enviarVideo(hash, ipC){
         })
 }
 
+function reproducirVideo(){
+
+    if (HTMLScriptElement.isSupported()){
+        var video = document.getElementById('video');
+        var hls = new hls();
+        hls.attachMedia(video);
+        hls.on (Hls.Events.MEDIA_ATTACHED, function(){
+            console.log("video y hls.js estan conectados ahora");
+            hls.loadSource("http://127.0.0.1:5004");
+            hls.on(Hls.Events.MANIFEST_PARSED, function ( event,data){
+            console.log("manifest cargado, encontrado" + data.levels.length +" nivel de calidad");    
+            })
+        })
+    }
+};
+
 
 /*var nombre = prompt('Introduce el nombre:');
 var hash = hashName(nombre);
@@ -67,7 +84,7 @@ $.post("http://jsonip.appspot.com/",function(data){//conseguir la ip de este pc
 */
 var hash = "hola";
 var ipC=0;
-var ipsV = connectToServer(hash,ipC);
+var ipsV = new Array (connectToServer(hash,ipC));
 console.log(ipsV)
 if(ipsV.length>0){
     var random = Math.floor(Math.random() * ipsV.length);//se coje un cliente random de la lista de ips que tienen el video
