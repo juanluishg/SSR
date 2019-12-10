@@ -42,11 +42,14 @@ function connectToClient(hash, ipC){//Cliente se conecta a un cliente  para que 
 function enviarVideo(hash, ipC){
     let p = zmq.socket('router')
     console.log("Enviando...")
+    let reader = new FileReader();
     p.bind("tcp//*:5004")
     p.on('message',(nombreVideo) => {
-            var v = nombreVideo.toString()
+            var v = nombreVideo;
             if(file_exits(v)){
-                p.send(v)
+                var arch = GetObject("\\home\\juanluishg\\Videos\\"+v+".avi");
+                var leido = reader.readAsArrayBuffer(arch)
+                p.send()
                 console.log("Enviado");
             }
         p.close();
