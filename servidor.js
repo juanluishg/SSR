@@ -1,8 +1,16 @@
 const zmq = require('zeromq');
 
-var BD = [{14132441038:"127.0.0.1"},{1497625976:"127.0.0.1"}]
+var BD = [];
 var BDmap = new Map([BD]);
-BDmap.set("platano",["127.0.0.1"]);
+
+BDmap.set(hashName("platano"),["127.0.0.1"]);
+BDmap.set(hashName("figura"),["192.168.0.4"]);
+BDmap.set(hashName("señor"),["192.168.54.111"]);
+
+
+
+console.log(BDmap);
+console.log(BDmap.get(hashName("platano")));
 
 function hashName(name){//Hacer el hash del nombre del video
     var hash = 0, i, chr;
@@ -21,7 +29,7 @@ function escucharGuardar(){
 	var r = zmq.socket('router');
 
 	r.bind('tcp://*:5566');
-	
+	console.log("Escuchando para guardar peers");
 	r.on('message',(hash,ipC)=>{ //escucha en el 5566 para guardar a peers con un video
 		console.log('Guarda peers')
 		BDmap.set(hash,ipC);
@@ -33,11 +41,11 @@ function escucharBuscar(){
 	let s = zmq.socket('router');
 
 	s.bind('tcp://*:5555');
-	console.log("Cliente conectado");
-	s.on('message',(hash,ipC)=>{ //escucha en el 5555 para recibir la peticion y devolver los pares con ese video
-	
-		console.log("Mensaje recibido: " + hash + " y " + ipC);
-		let ip = BDmap.get(hash);
+	console.log("Escuchando a clientes");
+	s.on('message',(hash)=>{ //escucha en el 5555 para recibir la peticion y devolver los pares con ese video
+		console.log("Mensaje recibido: " + hash);
+		let ip = BDmap.get(hashName("hash"));
+		console.log(ip);
 		console.log('dir ip =' + ip)
 
 		s.send(ip);
@@ -47,5 +55,7 @@ function escucharBuscar(){
 
 
 
+
 escucharBuscar();
+
 escucharGuardar();

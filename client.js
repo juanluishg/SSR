@@ -1,3 +1,4 @@
+
 const zmq = require('zeromq'); //importar libreria zeromq
 function hashName(name){//Hacer el hash del nombre del video
     var hash = 0, i, chr;
@@ -10,21 +11,24 @@ function hashName(name){//Hacer el hash del nombre del video
   return hash;
 }
 
-function connectToServer(hash, ipC, f){//Cliente se conecta al servidor para conocer IP del cliente que tiene el video
+function connectToServer(hash){//Cliente se conecta al servidor para conocer IP del cliente que tiene el video
     ip = "127.0.0.1";//ip del servidor
     port = "5555";//puerto del servidor
     let s = zmq.socket('req');
     console.log("Conectando...");
     s.connect('tcp://'+ip+":"+port);
-    s.send([hash,ipC]); 
+    s.send(hash); 
     s.on('message',(msg)=>{
         console.log("Recibido");
         var m = msg;
+        if(m != ""){
+            var random = Math.floor(Math.random() * m.length);//se coje un cliente random de la lista de ips que tienen el video
+        }
         console.log(m)
         return m//recibe una lista de las ips de los clientes que tienen el video
         s.close();
     })
-    f();
+
 }
 
 function connectToClient(hash, ipC){//Cliente se conecta a un cliente  para que le envie el video
@@ -80,17 +84,12 @@ function convertirVideo(nombre){
 }
 
 
-/*var nombre = prompt('Introduce el nombre:');
-var hash = hashName(nombre);
-var ipC=0;
-$.post("http://jsonip.appspot.com/",function(data){//conseguir la ip de este pc
-    ipC = data.ip;
-},"json");
-*/
-var hash = "platano";
-var ipC="127.0.0.1";
+
+
 var ipsV = [];
-ipsV = connectToServer(hash,ipC,f);
+var plat = hashName("platano");
+console.log(plat);
+ipsV = connectToServer("platano");
 function f (){
     console.log(ipsV)
     if(ipsV != ""){
