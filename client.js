@@ -1,4 +1,3 @@
-const config = require('./json/config.json');
 const zmq = require('zeromq'); //importar libreria zeromq
 function hashName(name){//Hacer el hash del nombre del video
     var hash = 0, i, chr;
@@ -14,7 +13,8 @@ function hashName(name){//Hacer el hash del nombre del video
 function connectToServer(hash, ipC){//Cliente se conecta al servidor para conocer IP del cliente que tiene el video
     ip = "127.0.0.1";//ip del servidor
     port = "5555";//puerto del servidor
-    let s = zmq.socket('req');
+    //let s = zmq.socket('req');
+    let s = new zmq.Request();
     console.log("Conectando...");
     s.connect('tcp://'+ip+":"+port);
     s.send(hash+"//"+ipC); 
@@ -42,37 +42,42 @@ function connectToClient(hash, ipC){//Cliente se conecta a un cliente  para que 
 
 function enviarVideo(hash, ipC){
     let p = zmq.socket('router')
-    console.log("Enviando...")
-    let reader = new FileReader();
+    console.log("Enviando...");
     p.bind("tcp//*:5004")
     p.on('message',(nombreVideo) => {
             var v = nombreVideo;
             if(file_exits(v)){
-                var arch = GetObject("/home/juanluishg/Videos/"+v+".avi");
-                var leido = reader.readAsArrayBuffer(arch)
-                for(let i=0;i<arch.length;i++){p.send(arch[i])}
-                p.send("fin");
+                convertirVideo(nombreVideo);
+                var HLSServer = require('hls-server')
+                var http = require('http')
+                
+                var server = http.createServer()
+                var hls = new HLSServer(server, {
+                path: '/streams',     // Base URI to output HLS streams
+                dir: 'videos'  // Directory that input files are stored
+                })
+                server.listen(8000);
                 console.log("Enviado");
             }
         p.close();
         })
 }
 
-function reproducirVideo(){
-
-    if (HTMLScriptElement.isSupported()){
-        var video = document.getElementById('video');
-        var hls = new hls();
-        hls.attachMedia(video);
-        hls.on (Hls.Events.MEDIA_ATTACHED, function(){
-            console.log("video y hls.js estan conectados ahora");
-            hls.loadSource("http://127.0.0.1:5004");
-            hls.on(Hls.Events.MANIFEST_PARSED, function ( event,data){
-            console.log("manifest cargado, encontrado" + data.levels.length +" nivel de calidad");    
-            })
-        })
+function convertirVideo(nombre){
+    var ffmpeg = require('fluent-ffmpeg')
+ 
+    function callback() { 
+        fmpeg(nombre+'.mp4', { timeout: 432000 }).addOptions([
+            '-profile:v baseline', // baseline profile (level 3.0) for H264 video codec
+            '-level 3.0', 
+            '-s 640x360',          // 640px width, 360px height output video dimensions
+            '-start_number 0',     // start the first .ts segment at index 0
+            '-hls_time 10',        // 10 second segment duration
+            '-hls_list_size 0',    // Maxmimum number of playlist entries (0 means all entries/infinite)
+            '-f hls'               // HLS format
+        ]).output('videos/output.m3u8').on('end', callback).run()
     }
-};
+}
 
 
 /*var nombre = prompt('Introduce el nombre:');
@@ -84,7 +89,7 @@ $.post("http://jsonip.appspot.com/",function(data){//conseguir la ip de este pc
 */
 var hash = "hola";
 var ipC=0;
-var ipsV = new Array (connectToServer(hash,ipC));
+var ipsV = connectToServer(hash,ipC);
 console.log(ipsV)
 if(ipsV.length>0){
     var random = Math.floor(Math.random() * ipsV.length);//se coje un cliente random de la lista de ips que tienen el video
