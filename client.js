@@ -21,12 +21,12 @@ function connectToServer(hash){//Cliente se conecta al servidor para conocer IP 
     s.send(hash); 
     s.on('message',(msg)=>{
         console.log("Recibido");
-        var m = msg;
-        if(m != ""){
-            var random = Math.floor(Math.random() * m.length);//se coje un cliente random de la lista de ips que tienen el video
-        }
-        console.log(m)
-        return m//recibe una lista de las ips de los clientes que tienen el video
+        
+        let str = ""+msg;
+        console.log("Conectando con el peer: "+ msg);
+        connectToClient(hash,str)
+        
+        //recibe una lista de las ips de los clientes que tienen el video
         s.close();
     })
 
@@ -35,13 +35,12 @@ function connectToServer(hash){//Cliente se conecta al servidor para conocer IP 
 function connectToClient(hash, ipC){//Cliente se conecta a un cliente  para que le envie el video
     let c = zmq.socket('req');
     console.log("Conectando...");
-    c.connect('tcp://'+ipC+":5004")//Ip del cliente que tiene el video
-    c.send(hash);
-    c.on('message',(msg)=>{
-        console.log("Recibido");
-        return video;//Recibe el video/parte del video
-        c.close();
-    })
+    let stri = ""+ipC;
+    console.log(hash+" "+stri)
+    c.connect('tcp://'+stri+":5004")//Ip del cliente que tiene el video
+    c.send([hash,ipC]);
+    
+    
 }
 
 
@@ -89,7 +88,7 @@ function convertirVideo(nombre){
 
 var ipsV = [];
 var plat = hashName("platano");
-console.log(plat);
+console.log("platano");
 ipsV = connectToServer("platano");
 function f (){
     console.log(ipsV)

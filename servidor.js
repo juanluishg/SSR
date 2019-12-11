@@ -10,7 +10,8 @@ BDmap.set(hashName("señor"),["192.168.54.111"]);
 
 
 console.log(BDmap);
-console.log(BDmap.get(hashName("platano")));
+let cx = BDmap.get(hashName("platano"))
+console.log(cx);
 
 function hashName(name){//Hacer el hash del nombre del video
     var hash = 0, i, chr;
@@ -42,16 +43,15 @@ function escucharBuscar(){
 
 	s.bind('tcp://*:5555');
 	console.log("Escuchando a clientes");
-	s.on('message',(cod,sep,hash)=>{ //escucha en el 5555 para recibir la peticion y devolver los pares con ese video
+	s.on('message',(cod,sep,palabra)=>{ //escucha en el 5555 para recibir la peticion y devolver los pares con ese video
 		
-			console.log("Mensaje recibido: " + hash);
-		
-		let h = hashName(hash);
-		let ip = BDmap.get(h);
+			let strg = ""+ palabra;
+			let hash = hashName(strg)
+		let ip = BDmap.get(hash);
 		console.log(ip);
 		console.log('dir ip =' + ip)
 
-		s.send(ip);
+		s.send([cod,'',ip]);
 		console.log('envio dir ip ='+ ip)
 	});
 }

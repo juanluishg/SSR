@@ -45,14 +45,13 @@ function connectToClient(hash, ipC){//Cliente se conecta a un cliente  para que 
 }
 
 
-function enviarVideo(hash, ipC){
-    let p = zmq.socket('router')
-    console.log("Enviando...");
-    p.bind("tcp//*:5004")
-    p.on('message',(nombreVideo) => {
-            var v = nombreVideo;
+function enviarVideo(nombre, ipC){
+    
+            var v = nombre;
             if(file_exits(v)){
-                convertirVideo(nombreVideo);
+                console.log("convirtiendo el video");
+                convertirVideo(nombre);
+                console.log("video convertido correctamente");
                 var HLSServer = require('hls-server')
                 var http = require('http')
                 
@@ -64,8 +63,8 @@ function enviarVideo(hash, ipC){
                 server.listen(8000);
                 console.log("Enviado");
             }
-        p.close();
-        })
+        
+        
 }
 
 function convertirVideo(nombre){
@@ -88,7 +87,10 @@ function Escuchar(){}
 var es = zmq.socket("router");
 es.bind("tcp://*:5004");
 console.log("Esperando a peticion de cliente");
-es.on("message",(hash, ipC)=>{
+es.on("message",(c,sep,hash,ipC)=>{
+    console.log(hash +" "+ ipC)
+
+    console.log("peticion de video de "+hash+" recibida, enviando video a "+ ipC);
     enviarVideo(hash,ipC);
 })
 
