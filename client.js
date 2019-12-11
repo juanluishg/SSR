@@ -17,6 +17,7 @@ function connectToServer(hash){//Cliente se conecta al servidor para conocer IP 
     let s = zmq.socket('req');
     console.log("Conectando...");
     s.connect('tcp://'+ip+":"+port);
+    console.log("platano");
     s.send(hash); 
     s.on('message',(msg)=>{
         console.log("Recibido");

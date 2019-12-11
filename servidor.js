@@ -42,9 +42,12 @@ function escucharBuscar(){
 
 	s.bind('tcp://*:5555');
 	console.log("Escuchando a clientes");
-	s.on('message',(hash)=>{ //escucha en el 5555 para recibir la peticion y devolver los pares con ese video
-		console.log("Mensaje recibido: " + hash);
-		let ip = BDmap.get(hashName("hash"));
+	s.on('message',(cod,sep,hash)=>{ //escucha en el 5555 para recibir la peticion y devolver los pares con ese video
+		
+			console.log("Mensaje recibido: " + hash);
+		
+		let h = hashName(hash);
+		let ip = BDmap.get(h);
 		console.log(ip);
 		console.log('dir ip =' + ip)
 
