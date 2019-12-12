@@ -60,6 +60,7 @@ function enviarVideo(nombre, ipC) {
         path: '/streams',     // Base URI to output HLS streams
         dir: 'videos'  // Directory that input files are stored
     })
+    console.log(server);
     server.listen(8000);
     console.log("Enviado");
 
@@ -79,7 +80,7 @@ function convertirVideo(nombre) {
             '-hls_time 10',        // 10 second segment duration
             '-hls_list_size 0',    // Maxmimum number of playlist entries (0 means all entries/infinite)
             '-f hls'               // HLS format
-        ]).output('videos/output.m3u8').on('end', callback).run()
+        ]).output('videos/prueba.m3u8').on('end', callback).run()
     }
 }
 
