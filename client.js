@@ -67,7 +67,7 @@ function enviarVideo(hash, ipC){
         })
 }
 
-function convertirVideo(nombre){
+/*function convertirVideo(nombre){
     var ffmpeg = require('fluent-ffmpeg')
  
     function callback() { 
@@ -81,22 +81,38 @@ function convertirVideo(nombre){
             '-f hls'               // HLS format
         ]).output('videos/output.m3u8').on('end', callback).run()
     }
+}*/
+
+function reproducirVideo(nombreVideo,port=8000) {
+    var video = document.getElementById('video');
+    if(Hls.isSupported()) {
+      var hls = new Hls();
+      console.log(hls)
+      hls.loadSource('localhost:8000/streams/platano.m3u8');
+      console.log("if-------------");
+      console.log(hls.src)
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED,function() {
+        video.play();
+    });
+   }
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = 'localhost:8000/streams/prueba.m3u8';
+      console.log(video.src)
+      video.addEventListener('loadedmetadata',function() {
+        video.play();
+      });
+    }
 }
 
-
-
-
 var ipsV = [];
-var plat = hashName("platano");
-console.log("platano");
-ipsV = connectToServer("platano");
+var nvid = process.argv[2];
+var plat = hashName(nvid);
+console.log(nvid);
+ipsV = connectToServer(nvid);
 function f (){
     console.log(ipsV)
     if(ipsV != ""){
         var random = Math.floor(Math.random() * ipsV.length);//se coje un cliente random de la lista de ips que tienen el video
     }
-
-    var buffer = Buffer.alloc(20);//se reserva memoria para el buffer
-
-    buffer = connectToClient(hash, random);
 }

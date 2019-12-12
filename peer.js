@@ -49,9 +49,9 @@ function enviarVideo(nombre, ipC) {
 
     var v = nombre;
 
-    console.log("convirtiendo el video");
-    convertirVideo(nombre);
-    console.log("video convertido correctamente");
+    //console.log("convirtiendo el video");
+    //convertirVideo(nombre);
+    //console.log("video convertido correctamente");
     var HLSServer = require('hls-server')
     var http = require('http')
 
@@ -60,7 +60,6 @@ function enviarVideo(nombre, ipC) {
         path: '/streams',     // Base URI to output HLS streams
         dir: 'videos'  // Directory that input files are stored
     })
-    console.log(server);
     server.listen(8000);
     console.log("Enviado");
 
@@ -68,11 +67,11 @@ function enviarVideo(nombre, ipC) {
 
 }
 
-function convertirVideo(nombre) {
+/*function convertirVideo(nombre) {
     var ffmpeg = require('fluent-ffmpeg')
 
     function callback() {
-        fmpeg(nombre + '.mp4', { timeout: 432000 }).addOptions([
+        fmpeg("videos/"+nombre + '.mp4', { timeout: 432000 }).addOptions([
             '-profile:v baseline', // baseline profile (level 3.0) for H264 video codec
             '-level 3.0',
             '-s 640x360',          // 640px width, 360px height output video dimensions
@@ -80,9 +79,9 @@ function convertirVideo(nombre) {
             '-hls_time 10',        // 10 second segment duration
             '-hls_list_size 0',    // Maxmimum number of playlist entries (0 means all entries/infinite)
             '-f hls'               // HLS format
-        ]).output('videos/prueba.m3u8').on('end', callback).run()
+        ]).output('streams/prueba.m3u8').on('end', callback).run()
     }
-}
+}*/
 
 function Escuchar() { }
 var es = zmq.socket("router");
